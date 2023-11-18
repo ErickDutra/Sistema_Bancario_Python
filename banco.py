@@ -1,15 +1,18 @@
 import abc
+from dataclasses import dataclass
 
+
+@dataclass
 class Conta(abc.ABC):
-    def __init__(self, agencia, conta, saldo = 0):
-        self.agencia = agencia
-        self.conta = conta
-        self.saldo = saldo
+    agencia: int
+    conta: int
+    saldo: float
 
     @abc.abstractmethod
-    def sacar(self):...
-    
-    def depositar(self,valor):
+    def sacar(self):
+        ...
+
+    def depositar(self, valor):
         self.saldo += valor
 
 
@@ -17,73 +20,49 @@ class Corrente(Conta):
     def sacar(self, valor):
         saldo_corrente = self.saldo
         saldo_corrente = self.saldo - valor
-        if saldo_corrente >= (-100) :
+        if saldo_corrente >= (-100):
             self.saldo = saldo_corrente
             return self.saldo
         else:
             print(f"Ultapassou limite de saque:{-100}")
             return self.saldo
-        
+
     def __repr__(self):
         class_name = type(self).__name__
-        attrs = f'({self.agencia},{self.conta},{self.saldo})'
-        return f'{class_name}{attrs}'
-        
-        
-        
+        attrs = f"({self.agencia},{self.conta},{self.saldo})"
+        return f"{class_name}{attrs}"
+
+
 class Poupanca(Conta):
     def sacar(self, valor):
         saldo_poupanca = self.saldo
         saldo_poupanca -= valor
-        if saldo_poupanca >=  (0):
+        if saldo_poupanca >= (0):
             self.saldo = saldo_poupanca
             return self.saldo
         else:
             print(f"Ultapassou limite de saque:{0}")
             return self.saldo
-        
+
     def __repr__(self):
         class_name = type(self).__name__
-        attrs = f'({self.agencia},{self.conta},{self.saldo})'
-        return f'{class_name}{attrs}'
-        
-        
+        attrs = f"({self.agencia},{self.conta},{self.saldo})"
+        return f"{class_name}{attrs}"
+
+
+@dataclass
 class Pessoa(abc.ABC):
-    def __init__(self, nome, idade):
-        self.nome = nome
-        self.idade = idade
-         
-    @property
-    def cliente_nome(self):
-        return self.nome
-    
-    @cliente_nome.setter
-    def cliente_nome(self,nome):
-        self.nome = nome
-    
-    @property
-    def cliente_idade(self):
-        return self.idade  
-    
-    @cliente_idade.setter
-    def cliente_idade(self,idade):
-        self.idade = idade
-       
-       
-    def __repr__(self):
-        class_name = type(self).__name__
-        attrs = f'({self.nome},{self.idade})'
-        return f'{class_name}{attrs}'
-       
-       
+    nome: str
+    idade: int
+
+
 class Cliente(Pessoa):
-    def __init__(self,nome,idade):
-        super().__init__(nome,idade)
+    def __init__(self, nome, idade):
+        super().__init__(nome, idade)
         self.conta: Conta | None
 
 
-        
-class Banco():
+class Banco:
     def __init__(
         self,
         agencias: list[int] | None = None,
@@ -93,8 +72,8 @@ class Banco():
         self.agencias = agencias or []
         self.clientes = clientes or []
         self.contas = contas or []
-        
-    def checar(self,cliente,conta):
+
+    def checar(self, cliente, conta):
         validar = False
         while True:
             if conta is cliente.conta:
@@ -109,14 +88,14 @@ class Banco():
                 validar = False
                 print("Cliente não Passou na checagem")
                 return validar
-                
+
             if cliente in self.clientes:
                 validar = True
             else:
                 validar = False
                 print("Cliente não Passou na checagem")
                 return validar
-            
+
             if conta in self.contas:
                 validar = True
                 return validar
@@ -124,28 +103,26 @@ class Banco():
                 validar = False
                 print("Cliente não Passou na checagem")
                 return validar
-                
-            
-            
+
     def __repr__(self):
-        attrs = f'({self.agencias},{self.clientes},{self.contas})'
-        return f'{attrs}'
-                
-            
-c1 = Cliente('Erick', 25)
-corrente_c1 = Corrente(111,122)
+        attrs = f"({self.agencias},{self.clientes},{self.contas})"
+        return f"{attrs}"
+
+
+c1 = Cliente("Erick", 25)
+corrente_c1 = Corrente(111, 122, 0)
 c1.conta = corrente_c1
 
-c2 = Cliente('Joao', 25)
-corrente_c2 = Corrente(112,122)
+c2 = Cliente("Joao", 25)
+corrente_c2 = Corrente(112, 122, 0)
 c2.conta = corrente_c2
 
 banco = Banco()
-banco.clientes.extend([c1,c2])
+banco.clientes.extend([c1, c2])
 banco.contas.extend([corrente_c1, corrente_c2])
 banco.agencias.extend([112, 111])
 print(banco)
-validar = banco.checar(c2,corrente_c2)
+validar = banco.checar(c2, corrente_c2)
 print(validar)
 
 if validar:
