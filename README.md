@@ -1,2 +1,3 @@
 # Sistema_Bancario_Python
- sistema foi criado somente com oque foi instruido nas aulas.
+Sistema criado como desafio de aula.
+Feito somente com oque foi transmitido em aula.
